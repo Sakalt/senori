@@ -294,7 +294,7 @@ function adjustBrightness() {
     document.body.style.opacity = brightnessValue / 100;
 }
 
-function WindSearch() {
+function WindBrowser() {
     const searchQuery = document.getElementById('search-input').value;
     if (searchQuery) {
         const bingUrl = `https://www.bing.com/search?q=${encodeURIComponent(searchQuery)}`;
