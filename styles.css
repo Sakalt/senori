@@ -2,7 +2,8 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background: #f0f0f0;
+    background: url('壁紙.jpg') no-repeat center center fixed;
+    background-size: cover;
 }
 
 #lock-screen {
@@ -75,4 +76,41 @@ footer {
     background: #333;
     color: #fff;
     padding: 10px 0;
+}
+
+.app-window {
+    position: fixed;
+    bottom: -100%;
+    width: 300px;
+    height: 200px;
+    background: white;
+    border: 1px solid #ccc;
+    animation: slideUp 0.5s ease-in-out forwards;
+}
+
+@keyframes slideUp {
+    to { bottom: 10%; }
+}
+
+.app-title-bar {
+    background: #393939;
+    color: white;
+    padding: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.app-title-bar button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+#start-button {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
 }
