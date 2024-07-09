@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Winder3.0</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="lock-screen">
+        <input type="text" id="user-input" placeholder="名前を教えてください">
+        <button onclick="saveName()">保存</button>
+    </div>
+    <!-- スタートメニューのボタン -->
+    <button onclick="toggleStartMenu()">スタート</button>
+    <!-- スタートメニュー本体 -->
+    <div id="start-menu" class="animated-menu" style="display: none;">
+        <ul>
+            <li><button onclick="openBrowser()">ブラウザ</button></li>
+            <li><button onclick="openCalculator()">電卓</button></li>
+            <li><button onclick="openWeatherApp()">天気アプリ</button></li>
+            <li><button onclick="openNotepad()">Notepadアプリ</button></li>
+            <li><button onclick="openPaintApp()">ペイントアプリ</button></li>
+            <li><button onclick="openClockApp()">時計アプリ</button></li>
+            <li><button onclick="openTaskManager()">タスクマネージャー</button></li>
+            <li><button onclick="openSettings()">設定</button></li>
+            <li><button onclick="openCamera()">カメラ</button></li>
+            <li><button onclick="openFileExplorer()">ファイルエクスプローラー</button></li>
+            <li><button onclick="openChat()">チャット</button></li>
+        </ul>
+    </div>
+    <div id="app-container"></div>
+    <footer>
+        <p>©windersoft(fiction)</p>
+    </footer>
+    <script src="app.js"></script>
+</body>
+</html>
