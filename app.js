@@ -13,7 +13,6 @@ function toggleStartMenu() {
     const startMenu = document.getElementById('start-menu');
     startMenu.style.display = startMenu.style.display === 'none' ? 'block' : 'none';
 }
-
 function openBrowser() {
     createWindow('ブラウザ', browserContent());
 }
