@@ -193,3 +193,34 @@ function openChat() {
 }
 
 // 各アプリの内容を追加していく
+function openWindBrowser() {
+    createWindow('ブラウザ', browserContent());
+}
+
+function WindBrowser() {
+    return `
+        <div>
+            <input type="text" id="url-input" placeholder="URLを入力してください">
+            <button onclick="navigate()">移動</button>
+            <br><br>
+            <iframe id="browser-frame" width="100%" height="400px" src=""></iframe>
+        </div>
+    `;
+}
+
+function navigate() {
+    const urlInput = document.getElementById('url-input').value;
+    const browserFrame = document.getElementById('browser-frame');
+    
+    if (isValidURL(urlInput)) {
+        browserFrame.src = urlInput;
+    } else {
+        alert('有効なURLを入力してください。');
+    }
+}
+
+function isValidURL(url) {
+    // URLの簡易なバリデーション
+    const pattern = /^((http|https):\/\/)/;
+    return pattern.test(url);
+}
