@@ -293,3 +293,13 @@ function adjustBrightness() {
     const brightnessValue = document.getElementById('brightness').value;
     document.body.style.opacity = brightnessValue / 100;
 }
+
+function WindSearch() {
+    const searchQuery = document.getElementById('search-input').value;
+    if (searchQuery) {
+        const bingUrl = `https://www.bing.com/search?q=${encodeURIComponent(searchQuery)}`;
+        window.open(bingUrl, '_blank');
+    } else {
+        alert('検索クエリを入力してください。');
+    }
+}
