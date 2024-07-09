@@ -1,5 +1,3 @@
-// App.js
-
 let blackList = [];
 
 function saveName() {
@@ -71,16 +69,161 @@ function openWindBrowser() {
     createWindow('ブラウザ', browserContent());
 }
 
+function browserContent() {
+    return `
+        <div>
+            <input type="text" id="url-input" placeholder="URLを入力してください">
+            <button onclick="navigate()">移動</button>
+            <br><br>
+            <iframe id="browser-frame" width="100%" height="400px" src=""></iframe>
+        </div>
+    `;
+}
+
+function navigate() {
+    const urlInput = document.getElementById('url-input').value;
+    const browserFrame = document.getElementById('browser-frame');
+    
+    if (isValidURL(urlInput)) {
+        browserFrame.src = urlInput;
+    } else {
+        alert('有効なURLを入力してください。');
+    }
+}
+
+function isValidURL(url) {
+    const pattern = /^((http|https):\/\/)/;
+    return pattern.test(url);
+}
+
 function openCalculator() {
     createWindow('電卓', calculatorContent());
 }
 
-function openWeatherApp() {
-    createWindow('天気アプリ', weatherAppContent());
+function calculatorContent() {
+    return `
+        <div class="calculator">
+            <input type="text" id="calc-display" disabled>
+            <div>
+                <button onclick="appendToDisplay('1')">1</button>
+                <button onclick="appendToDisplay('2')">2</button>
+                <button onclick="appendToDisplay('3')">3</button>
+                <button onclick="performOperation('+')">+</button>
+            </div>
+            <div>
+                <button onclick="appendToDisplay('4')">4</button>
+                <button onclick="appendToDisplay('5')">5</button>
+                <button onclick="appendToDisplay('6')">6</button>
+                <button onclick="performOperation('-')">-</button>
+            </div>
+            <div>
+                <button onclick="appendToDisplay('7')">7</button>
+                <button onclick="appendToDisplay('8')">8</button>
+                <button onclick="appendToDisplay('9')">9</button>
+                <button onclick="performOperation('*')">*</button>
+            </div>
+            <div>
+                <button onclick="clearDisplay()">C</button>
+                <button onclick="appendToDisplay('0')">0</button>
+                <button onclick="calculateResult()">=</button>
+                <button onclick="performOperation('/')">/</button>
+            </div>
+        </div>
+    `;
 }
 
-function openNotepad() {
-    createWindow('ノートパッド', notepadContent());
+function appendToDisplay(value) {
+    const display = document.getElementById('calc-display');
+    display.value += value;
+}
+
+function performOperation(operation) {
+    const display = document.getElementById('calc-display');
+    display.value += ` ${operation} `;
+}
+
+function clearDisplay() {
+    const display = document.getElementById('calc-display');
+    display.value = '';
+}
+
+function calculateResult() {
+    const display = document.getElementById('calc-display');
+    display.value = eval(display.value);
+}
+
+function openClockApp() {
+    createWindow('時計アプリ', clockAppContent());
+    updateClock();
+}
+
+function clockAppContent() {
+    return `
+        <div>
+            <h1 id="clock">00:00:00</h1>
+        </div>
+    `;
+}
+
+function updateClock() {
+    const clockElement = document.getElementById('clock');
+    
+    const updateTime = () => {
+        const now = new Date();
+        clockElement.textContent = now.toLocaleTimeString();
+    };
+
+    updateTime();
+    setInterval(updateTime, 1000);
+}
+
+function openTimerApp() {
+    createWindow('タイマー', timerAppContent());
+}
+
+function timerAppContent() {
+    return `
+        <div>
+            <input type="number" id="timer-input" placeholder="秒数を入力してください">
+            <button onclick="startTimer()">スタート</button>
+            <button onclick="stopTimer()">ストップ</button>
+            <h1 id="timer-display">00:00</h1>
+        </div>
+    `;
+}
+
+let timerInterval;
+
+function startTimer() {
+    const input = document.getElementById('timer-input').value;
+    const display = document.getElementById('timer-display');
+    let time = parseInt(input, 10);
+
+    if (isNaN(time)) {
+        alert('有効な時間を入力してください。');
+        return;
+    }
+
+    display.textContent = formatTime(time);
+    
+    timerInterval = setInterval(() => {
+        time -= 1;
+        display.textContent = formatTime(time);
+        
+        if (time <= 0) {
+            clearInterval(timerInterval);
+        }
+    }, 1000);
+}
+
+function stopTimer() {
+    clearInterval(timerInterval);
+}
+
+function formatTime(time) {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 }
 
 function openPaintApp() {
@@ -91,6 +234,15 @@ function openPaintApp() {
     canvas.addEventListener('mousemove', paint);
     canvas.addEventListener('mouseup', () => isPainting = false);
     canvas.addEventListener('mouseleave', () => isPainting = false);
+}
+
+function paintAppContent() {
+    return `
+        <div>
+            <canvas id="paint-canvas" width="500" height="500" style="border:1px solid #000;"></canvas>
+            <button onclick="clearCanvas()">クリア</button>
+        </div>
+    `;
 }
 
 let isPainting = false;
@@ -124,119 +276,4 @@ function clearCanvas() {
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     isPainting = false;
-}
-
-function openClockApp() {
-    createWindow('時計', clockAppContent());
-    updateClock();
-}
-
-function clockAppContent() {
-    return `
-        <div>
-            <span id="clock-display">00:00:00</span>
-        </div>
-    `;
-}
-
-function updateClock() {
-    const clockElement = document.getElementById('clock-display');
-
-    const updateTime = () => {
-        const now = new Date();
-        const hours = formatTime(now.getHours());
-        const minutes = formatTime(now.getMinutes());
-        const seconds = formatTime(now.getSeconds());
-        clockElement.textContent = `${hours}:${minutes}:${seconds}`;
-    };
-
-    updateTime();
-    setInterval(updateTime, 1000);
-}
-
-function formatTime(time) {
-    return (time < 10 ? "0" : "") + time;
-}
-
-function openTaskManager() {
-    createWindow('タスクマネージャー', taskManagerContent());
-}
-
-function openSettings() {
-    createWindow('設定', settingsContent());
-}
-
-function openCamera() {
-    createWindow('カメラ', cameraAppContent());
-
-    navigator.mediaDevices.getUserMedia({ video: true })
-        .then(function (stream) {
-            const video = document.getElementById('camera-stream');
-            video.srcObject = stream;
-        })
-        .catch(function (error) {
-            console.error('カメラの使用が許可されていません。', error);
-        });
-}
-
-function takeSnapshot() {
-    const video = document.getElementById('camera-stream');
-    const canvas = document.getElementById('camera-canvas');
-    const ctx = canvas.getContext('2d');
-
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-    const image = canvas.toDataURL('image/png');
-    window.open(image);
-}
-
-function openFileExplorer() {
-    createWindow('ファイルエクスプローラー', fileExplorerContent());
-}
-
-function openChat() {
-    const chatWindow = document.getElementById('chat-window');
-    chatWindow.style.display = 'block';
-}
-
-// ペイントアプリ
-function paintAppContent() {
-    return `
-        <div>
-            <canvas id="paint-canvas" width="800" height="600"></canvas>
-            <br>
-            <button onclick="clearCanvas()">クリア</button>
-        </div>
-    `;
-}
-
-// ブラウザアプリ
-function browserContent() {
-    return `
-        <div>
-            <input type="text" id="url-input" placeholder="URLを入力してください">
-            <button onclick="navigate()">移動</button>
-            <br><br>
-            <iframe id="browser-frame" width="100%" height="400px" src=""></iframe>
-        </div>
-    `;
-}
-
-function navigate() {
-    const urlInput = document.getElementById('url-input').value;
-    const browserFrame = document.getElementById('browser-frame');
-    
-    if (isValidURL(urlInput)) {
-        browserFrame.src = urlInput;
-    } else {
-        alert('有効なURLを入力してください。');
-    }
-}
-
-function isValidURL(url) {
-    // URLの簡易なバリデーション
-    const pattern = /^((http|https):\/\/)/;
-    return pattern.test(url);
 }
