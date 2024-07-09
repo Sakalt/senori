@@ -10,40 +10,22 @@
     <div id="lock-screen">
         <h2>ようこそ！ログインしてください。</h2>
         <input type="text" id="user-input" placeholder="ユーザー名を入力してください">
-        <button onclick="saveName()">ログイン</button>
     </div>
 
-    <div id="start-menu" class="hidden">
-        <button onclick="toggleStartMenu()">スタート</button>
-        <div id="start-menu-content">
-            <button onclick="openWindBrowser()">ブラウザ</button>
-            <button onclick="openCalculator()">電卓</button>
-            <button onclick="openClockApp()">時計</button>
-            <button onclick="openTimerApp()">タイマー</button>
-            <button onclick="openNotepad()">ノートパッド</button>
-            <button onclick="openPaintApp()">ペイント</button>
-            <button onclick="openTaskManager()">タスクマネージャー</button>
-            <button onclick="openSettings()">設定</button>
-            <button onclick="openCamera()">カメラ</button>
-            <button onclick="openFileExplorer()">ファイルエクスプローラー</button>
-            <button onclick="openChat()">チャット</button>
+    <div id="app-container">
+        <div id="start-menu" class="hidden">
+            <button onclick="toggleStartMenu()">スタート</button>
+            <div id="start-menu-content">
+                <button onclick="openWindBrowser()">ブラウザ</button>
+                <button onclick="openCalculator()">電卓</button>
+                <button onclick="openClockApp()">時計</button>
+                <button onclick="openTimerApp()">タイマー</button>
+                <button onclick="openNotepad()">ノートパッド</button>
+                <button onclick="openPaintApp()">ペイント</button>
+            </div>
         </div>
     </div>
 
-    <div id="app-container"></div>
-
-    <div id="chat-window" class="app-window" style="display: none;">
-        <div class="app-title-bar">
-            <span>チャット</span>
-            <button onclick="closeWindow(this)">✕</button>
-        </div>
-        <div class="app-content">
-            <div id="chat-messages"></div>
-            <input type="text" id="chat-input" placeholder="メッセージを入力してください">
-            <button onclick="sendMessage()">送信</button>
-        </div>
-    </div>
-
-    <script src="App.js" defer></script>
+    <script src="app.js" defer></script>
 </body>
 </html>
