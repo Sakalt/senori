@@ -1,11 +1,20 @@
-body {
-    font-family: Arial, sans-serif;
+/* styles.css */
+
+/* Reset */
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body */
+body {
+    font-family: Arial, sans-serif;
     background: url('壁紙.jpg') no-repeat center center fixed;
     background-size: cover;
 }
 
+/* Lock Screen */
 #lock-screen {
     position: fixed;
     top: 0;
@@ -32,8 +41,57 @@ button {
     cursor: pointer;
 }
 
+/* Start Menu */
+#start-button {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 1001; /* Ensure it's above other elements */
+}
+
+#start-menu {
+    position: fixed;
+    top: 60px;
+    left: 20px;
+    width: 200px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    display: none;
+    z-index: 1000;
+}
+
+#start-menu-items {
+    list-style-type: none;
+    padding: 10px;
+}
+
+#start-menu-items li {
+    margin-bottom: 5px;
+}
+
+#start-menu-items li button {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    text-align: left;
+    background-color: #fff;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    cursor: pointer;
+}
+
+#start-menu-items li button:hover {
+    background-color: #e0e0e0;
+}
+
+/* Animated Menu */
 .animated-menu {
     animation: fadeIn 0.5s ease-in-out;
+}
+
+.hidden {
+    display: none;
 }
 
 @keyframes fadeIn {
@@ -41,55 +99,20 @@ button {
     to { opacity: 1; }
 }
 
-#chat-window {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    width: 300px;
-    height: 400px;
-    background: white;
-    border: 1px solid #ccc;
-    display: flex;
-    flex-direction: column;
-    z-index: 1001;
-}
-
-#chat-messages {
-    flex: 1;
-    padding: 10px;
-    overflow-y: auto;
-    border-bottom: 1px solid #ccc;
-}
-
-#chat-input {
-    padding: 10px;
-    border: none;
-    border-top: 1px solid #ccc;
-    flex-shrink: 0;
-}
-
-footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    text-align: center;
-    background: #333;
-    color: #fff;
-    padding: 10px 0;
-}
-
+/* App Windows */
 .app-window {
     position: fixed;
     bottom: -100%;
+    left: 50%;
+    transform: translateX(-50%);
     width: 300px;
-    height: 200px;
-    background: white;
+    max-height: 400px;
+    background: #fff;
     border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     animation: slideUp 0.5s ease-in-out forwards;
-}
-
-@keyframes slideUp {
-    to { bottom: 10%; }
+    z-index: 1001;
+    overflow: hidden;
 }
 
 .app-title-bar {
@@ -109,8 +132,43 @@ footer {
     cursor: pointer;
 }
 
-#start-button {
+/* Chat Window */
+#chat-window {
     position: fixed;
-    bottom: 20px;
-    left: 20px;
+    bottom: 0;
+    right: 0;
+    width: 300px;
+    height: 400px;
+    background: white;
+    border: 1px solid #ccc;
+    display: none;
+    flex-direction: column;
+    z-index: 1001;
+}
+
+#chat-messages {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    border-bottom: 1px solid #ccc;
+}
+
+#chat-input {
+    padding: 10px;
+    border: none;
+    border-top: 1px solid #ccc;
+    flex-shrink: 0;
+}
+
+/* Footer */
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    z-index: 1000;
 }
