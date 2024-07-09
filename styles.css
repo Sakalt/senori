@@ -3,8 +3,6 @@ body {
     margin: 0;
     padding: 0;
     background: #f0f0f0;
-    background: url('壁紙.jpg') no-repeat center center fixed;
-    background-size: cover;
 }
 
 #lock-screen {
@@ -104,75 +102,17 @@ button:hover {
     font-size: 18px;
 }
 
-
-border: none;
-    border-bottom: 1px solid #ccc;
-    cursor: pointer;
-}
-
-#start-menu-items li button:hover {
-    background-color: #e0e0e0;
-}
-
-/* Animated Menu */
-.animated-menu {
-    animation: fadeIn 0.5s ease-in-out;
-}
-
-.hidden {
-    display: none;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-/* App Windows */
-.app-window {
-    position: fixed;
-    bottom: -100%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 300px;
-    max-height: 400px;
-    background: #fff;
-    border: 1px solid #ccc;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    animation: slideUp 0.5s ease-in-out forwards;
-    z-index: 1001;
-    overflow: hidden;
-}
-
-.app-title-bar {
-    background: #393939;
-    color: white;
-    padding: 5px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.app-title-bar button {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 1.2rem;
-    cursor: pointer;
-}
-
-/* Chat Window */
 #chat-window {
     position: fixed;
-    bottom: 0;
-    right: 0;
+    bottom: 10px;
+    right: 10px;
     width: 300px;
     height: 400px;
-    background: white;
+    background: #fff;
     border: 1px solid #ccc;
-    display: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
     flex-direction: column;
-    z-index: 1001;
 }
 
 #chat-messages {
@@ -183,21 +123,8 @@ border: none;
 }
 
 #chat-input {
-    padding: 10px;
     border: none;
-    border-top: 1px solid #ccc;
-    flex-shrink: 0;
-}
-
-/* Footer */
-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: #333;
-    color: #fff;
-    text-align: center;
-    padding: 10px 0;
-    z-index: 1000;
+    padding: 10px;
+    width: calc(100% - 20px);
+    box-sizing: border-box;
 }
