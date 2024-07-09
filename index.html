@@ -10,6 +10,7 @@
     <div id="lock-screen">
         <h2>ようこそ！ログインしてください。</h2>
         <input type="text" id="user-input" placeholder="ユーザー名を入力してください">
+        <button onclick="saveName()">ログイン</button>
     </div>
 
     <div id="app-container">
@@ -20,9 +21,15 @@
                 <button onclick="openCalculator()">電卓</button>
                 <button onclick="openClockApp()">時計</button>
                 <button onclick="openTimerApp()">タイマー</button>
-                <button onclick="openNotepad()">ノートパッド</button>
+                <button onclick="openNotepad()">メモ帳</button>
                 <button onclick="openPaintApp()">ペイント</button>
+                <button onclick="openChat()">チャット</button>
             </div>
+        </div>
+        <div id="chat-window" class="hidden">
+            <div id="chat-messages"></div>
+            <input type="text" id="chat-input" placeholder="メッセージを入力してください">
+            <button onclick="sendMessage()">送信</button>
         </div>
     </div>
 
