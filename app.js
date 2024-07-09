@@ -101,6 +101,19 @@ function sendMessage() {
     const message = input.value;
     const username = localStorage.getItem('username');
 
+    function openChat() {
+    document.getElementById('chat-window').style.display = 'block';
+}
+
+function closeChat() {
+    document.getElementById('chat-window').style.display = 'none';
+}
+
+function sendMessage() {
+    const input = document.getElementById('chat-input');
+    const message = input.value;
+    const username = localStorage.getItem('username');
+
     if (message && !blackList.includes(username)) {
         const chatMessages = document.getElementById('chat-messages');
         const newMessage = document.createElement('div');
@@ -115,7 +128,20 @@ function sendMessage() {
 
 function openApp(appName) {
     const appContainer = document.getElementById('app-container');
-    appContainer.innerHTML = `<div class="app-window">${appName}が開かれました</div>`;
+    const appWindow = document.createElement('div');
+    appWindow.className = 'app-window';
+    appWindow.innerHTML = `
+        <div class="app-title-bar">
+            <span>${appName}</span>
+            <span>
+                <button onclick="minimizeApp(this)">_</button>
+                <button onclick="maximizeApp(this)">□</button>
+                <button onclick="closeApp(this)">×</button>
+            </span>
+        </div>
+        <div class="app-content">${appName}が開かれました</div>
+    `;
+    appContainer.appendChild(appWindow);
 }
 
 // ロック画面でEnterキーを押してログインする機能
@@ -151,6 +177,47 @@ function removeFromBlackList(username) {
         alert(`${username}がブラックリストから削除されました。`);
     }
 }
+
+function minimizeApp(button) {
+    const appWindow = button.closest('.app-window');
+    appWindow.style.display = 'none';
+}
+
+function maximizeApp(button) {
+    const appWindow = button.closest('.app-window');
+    appWindow.style.width = '100%';
+    appWindow.style.height = '100%';
+    appWindow.style.top = '0';
+    appWindow.style.left = '0';
+}
+
+function closeApp(button) {
+    const appWindow = button.closest('.app-window');
+    appWindow.remove();
+}
+function openApp(appName) {
+    const appContainer = document.getElementById('app-container');
+    appContainer.innerHTML = `<div class="app-window">${appName}が開かれました</div>`;
+}
+
+// ロック画面でEnterキーを押してログインする機能
+document.getElementById('user-input').addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+        saveName();
+    }
+});
+
+// 初回訪問時の名前入力
+window.onload = function() {
+    const username = localStorage.getItem('username');
+    if (username) {
+        document.getElementById('lock-screen').style.display = 'none';
+    } else {
+        document.getElementById('lock-screen').style.display = 'flex';
+    }
+};
+
+
 // ウィンドウをドラッグ可能にする関数
 function makeDraggable(element) {
     let isMouseDown = false;
