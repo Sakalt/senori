@@ -260,3 +260,36 @@ function openClock() {
         clockDisplay.textContent = now.toLocaleTimeString();
     }, 1000);
 }
+
+function settingsContent() {
+    return `
+        <h2>設定</h2>
+        <label for="change-name">名前の変更:</label>
+        <input type="text" id="change-name" placeholder="新しい名前を入力">
+        <br><br>
+        <label for="brightness">画面の明るさ:</label>
+        <input type="range" id="brightness" min="0" max="100" value="50">
+        <br><br>
+        <button onclick="changeName()">名前を変更する</button>
+        <button onclick="adjustBrightness()">明るさを調整する</button>
+    `;
+}
+
+function openSettings() {
+    createWindow('設定', settingsContent());
+}
+
+function changeName() {
+    const newName = document.getElementById('change-name').value;
+    if (newName) {
+        localStorage.setItem('username', newName);
+        alert(`名前が${newName}に変更されました！`);
+    } else {
+        alert('新しい名前を入力してください。');
+    }
+}
+
+function adjustBrightness() {
+    const brightnessValue = document.getElementById('brightness').value;
+    document.body.style.opacity = brightnessValue / 100;
+}
