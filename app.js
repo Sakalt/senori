@@ -162,10 +162,6 @@ function inputCalc(value) {
     }
 }
 
-function openCalculator() {
-    createWindow('電卓', calculatorContent());
-}
-
 const apiKey = 'eed0e1ad95aa9f7c9598eddb139a16f5';
 
 function weatherAppContent() {
@@ -253,3 +249,95 @@ function toggleStartMenu() {
     const startMenu = document.getElementById('start-menu');
     startMenu.classList.toggle('hidden');
 }
+
+function openBrowser() {
+    createWindow('ブラウザ', browserContent());
+}
+
+function browserContent() {
+    return `
+        <div id="browser">
+            <input type="text" id="url-input" placeholder="URLを入力してください">
+            <button onclick="loadPage()">読み込み</button>
+            <iframe id="browser-frame" src="" frameborder="0"></iframe>
+        </div>
+    `;
+}
+
+function loadPage() {
+    const urlInput = document.getElementById('url-input').value;
+    const browserFrame = document.getElementById('browser-frame');
+    browserFrame.src = urlInput;
+}
+
+function openPaintApp() {
+    createWindow('ペイント', paintAppContent());
+}
+
+function paintAppContent() {
+    return `
+        <div id="paint">
+            <canvas id="paint-canvas" width="800" height="600"></canvas>
+            <br>
+            <button onclick="clearCanvas()">クリア</button>
+            <button onclick="exportCanvas()">RGBAエクスポート</button>
+        </div>
+    `;
+}
+
+let paintCanvas;
+let paintContext;
+
+function initPaintApp() {
+    paintCanvas = document.getElementById('paint-canvas');
+    paintContext = paintCanvas.getContext('2d');
+    paintContext.lineWidth = 5;
+    paintContext.lineCap = 'round';
+    paintContext.strokeStyle = '#000000';
+
+    paintCanvas.addEventListener('mousedown', startPaint);
+    paintCanvas.addEventListener('mousemove', drawPaint);
+    paintCanvas.addEventListener('mouseup', endPaint);
+    paintCanvas.addEventListener('mouseout', endPaint);
+}
+
+function startPaint(event) {
+    paintContext.beginPath();
+    paintContext.moveTo(event.offsetX, event.offsetY);
+    paintCanvas.addEventListener('mousemove', drawPaint);
+}
+
+function drawPaint(event) {
+    paintContext.lineTo(event.offsetX, event.offsetY);
+    paintContext.stroke();
+}
+
+function endPaint() {
+    paintCanvas.removeEventListener('mousemove', drawPaint);
+}
+
+function clearCanvas() {
+    paintContext.clearRect(0, 0, paintCanvas.width, paintCanvas.height);
+}
+
+function exportCanvas() {
+    const imageData = paintContext.getImageData(0, 0, paintCanvas.width, paintCanvas.height);
+    const data = imageData.data;
+    const rgbaValues = [];
+
+    for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+        const a = data[i + 3] / 255; // Normalize alpha value
+
+        rgbaValues.push(`rgba(${r}, ${g}, ${b}, ${a.toFixed(2)})`);
+    }
+
+    console.log('RGBA values:', rgbaValues);
+}
+
+// 初期化
+document.addEventListener('DOMContentLoaded', function() {
+    initPaintApp();
+});
