@@ -148,6 +148,11 @@ function closeApp(button) {
     const appWindow = button.closest('.app-window');
     appWindow.remove();
 }
+// 電卓アプリを開く関数
+function openCalculator() {
+    createWindow('電卓', calculatorContent());
+}
+
 function calculatorContent() {
     return `
         <input type="text" id="calc-display" disabled>
