@@ -3,40 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Winder3.0</title>
+    <title>Windows風アプリケーション</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div id="lock-screen">
-        <input type="text" id="user-input" placeholder="名前を教えてください">
-        <button onclick="saveName()">保存</button>
+        <h2>ようこそ！ログインしてください。</h2>
+        <input type="text" id="user-input" placeholder="ユーザー名を入力してください">
     </div>
-    <button id="start-button" onclick="toggleStartMenu()">スタート</button>
-    <div id="start-menu" class="animated-menu hidden">
-        <ul id="start-menu-items">
-            <li><button onclick="windBrowser()">ブラウザ</button></li>
-            <li><button onclick="openCalculator()">電卓</button></li>
-            <li><button onclick="openWeatherApp()">天気アプリ</button></li>
-            <li><button onclick="openNotepad()">ノートパッド</button></li>
-            <li><button onclick="openPaintApp()">ペイント</button></li>
-            <li><button onclick="openClockApp()">時計アプリ</button></li>
-            <li><button onclick="openTaskManager()">タスクマネージャー</button></li>
-            <li><button onclick="openSettings()">設定</button></li>
-            <li><button onclick="openCamera()">カメラ</button></li>
-            <li><button onclick="openFileExplorer()">ファイルエクスプローラー</button></li>
-            <li><button onclick="openChat()">チャット</button></li>
-        </ul>
+
+    <div id="start-menu" class="hidden">
+        <button onclick="toggleStartMenu()">スタート</button>
+        <div id="start-menu-content">
+            <button onclick="openWindBrowser()">ブラウザ</button>
+            <button onclick="openCalculator()">電卓</button>
+            <button onclick="openClockApp()">時計</button>
+            <button onclick="openTimerApp()">タイマー</button>
+            <button onclick="openNotepad()">ノートパッド</button>
+            <button onclick="openPaintApp()">ペイント</button>
+            <button onclick="openTaskManager()">タスクマネージャー</button>
+            <button onclick="openSettings()">設定</button>
+            <button onclick="openCamera()">カメラ</button>
+            <button onclick="openFileExplorer()">ファイルエクスプローラー</button>
+            <button onclick="openChat()">チャット</button>
+        </div>
     </div>
+
     <div id="app-container"></div>
-    <div id="chat-window" class="app-window">
-        <div id="chat-messages"></div>
-        <input type="text" id="chat-input" placeholder="メッセージを入力">
-        <button onclick="sendMessage()">送信</button>
-        <button onclick="closeChat()">閉じる</button>
+
+    <div id="chat-window" class="app-window" style="display: none;">
+        <div class="app-title-bar">
+            <span>チャット</span>
+            <button onclick="closeWindow(this)">✕</button>
+        </div>
+        <div class="app-content">
+            <div id="chat-messages"></div>
+            <input type="text" id="chat-input" placeholder="メッセージを入力してください">
+            <button onclick="sendMessage()">送信</button>
+        </div>
     </div>
-    <footer>
-        <p>©windersoft(fiction)</p>
-    </footer>
-    <script defer src="app.js"></script>
+
+    <script src="App.js" defer></script>
 </body>
 </html>
