@@ -1,3 +1,5 @@
+// App.js
+
 let blackList = [];
 
 function saveName() {
@@ -125,20 +127,27 @@ function clearCanvas() {
 }
 
 function openClockApp() {
-    createWindow('時計アプリ', clockAppContent());
+    createWindow('時計', clockAppContent());
     updateClock();
 }
 
+function clockAppContent() {
+    return `
+        <div>
+            <span id="clock-display">00:00:00</span>
+        </div>
+    `;
+}
+
 function updateClock() {
-    const hoursElement = document.getElementById('hours');
-    const minutesElement = document.getElementById('minutes');
-    const secondsElement = document.getElementById('seconds');
+    const clockElement = document.getElementById('clock-display');
 
     const updateTime = () => {
         const now = new Date();
-        hoursElement.textContent = formatTime(now.getHours());
-        minutesElement.textContent = formatTime(now.getMinutes());
-        secondsElement.textContent = formatTime(now.getSeconds());
+        const hours = formatTime(now.getHours());
+        const minutes = formatTime(now.getMinutes());
+        const seconds = formatTime(now.getSeconds());
+        clockElement.textContent = `${hours}:${minutes}:${seconds}`;
     };
 
     updateTime();
@@ -192,12 +201,19 @@ function openChat() {
     chatWindow.style.display = 'block';
 }
 
-// 各アプリの内容を追加していく
-function openWindBrowser() {
-    createWindow('ブラウザ', browserContent());
+// ペイントアプリ
+function paintAppContent() {
+    return `
+        <div>
+            <canvas id="paint-canvas" width="800" height="600"></canvas>
+            <br>
+            <button onclick="clearCanvas()">クリア</button>
+        </div>
+    `;
 }
 
-function WindBrowser() {
+// ブラウザアプリ
+function browserContent() {
     return `
         <div>
             <input type="text" id="url-input" placeholder="URLを入力してください">
