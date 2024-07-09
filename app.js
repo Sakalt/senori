@@ -127,6 +127,7 @@ function calculatorContent() {
                 <button onclick="appendToDisplay('0')">0</button>
                 <button onclick="calculateResult()">=</button>
                 <button onclick="performOperation('/')">/</button>
+                <button onclick="performOperation('Math.sqrt')">√</button>
             </div>
         </div>
     `;
@@ -139,7 +140,11 @@ function appendToDisplay(value) {
 
 function performOperation(operation) {
     const display = document.getElementById('calc-display');
-    display.value += ` ${operation} `;
+    if (operation === 'Math.sqrt') {
+        display.value = Math.sqrt(eval(display.value));
+    } else {
+        display.value += ` ${operation} `;
+    }
 }
 
 function clearDisplay() {
@@ -226,21 +231,41 @@ function formatTime(time) {
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 }
 
+function openNotepad() {
+    createWindow('メモ帳', notepadContent());
+}
+
+function notepadContent() {
+    return `
+        <textarea id="notepad-content" rows="20" cols="50"></textarea>
+    `;
+}
+
 function openPaintApp() {
     createWindow('ペイント', paintAppContent());
 
     const canvas = document.getElementById('paint-canvas');
+    const colorPicker = document.getElementById('color-picker');
+    const exportButton = document.getElementById('export-button');
+    
     canvas.addEventListener('mousedown', startPainting);
     canvas.addEventListener('mousemove', paint);
     canvas.addEventListener('mouseup', () => isPainting = false);
     canvas.addEventListener('mouseleave', () => isPainting = false);
+
+    colorPicker.addEventListener('input', (e) => {
+        brushColor = e.target.value;
+    });
+
+    exportButton.addEventListener('click', exportCanvas);
 }
 
 function paintAppContent() {
     return `
         <div>
-            <canvas id="paint-canvas" width="500" height="500" style="border:1px solid #000;"></canvas>
-            <button onclick="clearCanvas()">クリア</button>
+            <input type="color" id="color-picker" value="#000000">
+            <button id="export-button">エクスポート</button>
+            <canvas id="paint-canvas" width="500" height="500" style="border: 1px solid #000;"></canvas>
         </div>
     `;
 }
@@ -248,6 +273,7 @@ function paintAppContent() {
 let isPainting = false;
 let lastX = 0;
 let lastY = 0;
+let brushColor = '#000000';
 
 function startPainting(e) {
     isPainting = true;
@@ -261,7 +287,7 @@ function paint(e) {
 
     ctx.lineWidth = 5;
     ctx.lineCap = 'round';
-    ctx.strokeStyle = '#000';
+    ctx.strokeStyle = brushColor;
 
     ctx.beginPath();
     ctx.moveTo(lastX, lastY);
@@ -276,4 +302,18 @@ function clearCanvas() {
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     isPainting = false;
+}
+
+function exportCanvas() {
+    const canvas = document.getElementById('paint-canvas');
+    const dataURL = canvas.toDataURL('image/png');
+    const link = document.createElement('a');
+    link.href = dataURL;
+    link.download = 'painting.png';
+    link.click();
+}
+
+function openChat() {
+    const chatWindow = document.getElementById('chat-window');
+    chatWindow.classList.toggle('hidden');
 }
