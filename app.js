@@ -1,5 +1,3 @@
-// app.js
-
 let blackList = [];
 
 function saveName() {
@@ -13,12 +11,12 @@ function saveName() {
 
 function toggleStartMenu() {
     const startMenu = document.getElementById('start-menu');
-    startMenu.style.display = startMenu.style.display === 'none' ? 'block' : 'none';
+    startMenu.classList.toggle('hidden');
 }
 
-function toggleChat() {
+function openChat() {
     const chatWindow = document.getElementById('chat-window');
-    chatWindow.style.display = chatWindow.style.display === 'none' ? 'block' : 'none';
+    chatWindow.classList.toggle('hidden');
 }
 
 function sendMessage() {
@@ -26,9 +24,8 @@ function sendMessage() {
     const message = messageInput.value;
     const chatMessages = document.getElementById('chat-messages');
     
-    // Example of blackList functionality (not fully implemented)
     if (blackList.includes(message.toLowerCase())) {
-        alert('このメッセージには禁止されている言葉が含まれています。');
+        alert('このメッセージにはブラックリストの単語が含まれています。');
         return;
     }
 
@@ -48,13 +45,11 @@ document.getElementById('user-input').addEventListener('keydown', function (e) {
 function createWindow(title, content) {
     const appContainer = document.getElementById('app-container');
 
-    // Close all other apps
     const currentApps = appContainer.querySelectorAll('.app-window');
     currentApps.forEach(app => {
         app.style.display = 'none';
     });
 
-    // Create new app window
     const appWindow = document.createElement('div');
     appWindow.classList.add('app-window');
     appWindow.innerHTML = `
@@ -103,6 +98,10 @@ function calculatorContent() {
     `;
 }
 
+function openCalculator() {
+    createWindow('電卓', calculatorContent());
+}
+
 function inputCalc(value) {
     const display = document.getElementById('calc-display');
     display.value += value;
@@ -110,59 +109,154 @@ function inputCalc(value) {
 
 function calculate() {
     const display = document.getElementById('calc-display');
-    display.value = eval(display.value);
+    try {
+        display.value = eval(display.value);
+    } catch (e) {
+        display.value = 'Error';
+    }
 }
 
 function clearCalc() {
-    const display = document.getElementById('calc-display');
-    display.value = '';
+    document.getElementById('calc-display').value = '';
 }
 
-// Functions to open different apps
-function openBrowser() {
-    createWindow('ブラウザ', '<iframe src="https://www.google.com" width="100%" height="100%"></iframe>');
+function paintContent() {
+    return `
+        <canvas id="paint-canvas" width="500" height="500" style="border: 1px solid black;"></canvas>
+        <br>
+        <button onclick="clearCanvas()">クリア</button>
+    `;
 }
 
-function openCalculator() {
-    createWindow('電卓', calculatorContent());
+function openPaint() {
+    createWindow('ペイント', paintContent());
+    const canvas = document.getElementById('paint-canvas');
+    const ctx = canvas.getContext('2d');
+    let painting = false;
+
+    canvas.addEventListener('mousedown', () => {
+        painting = true;
+        ctx.beginPath();
+    });
+
+    canvas.addEventListener('mouseup', () => {
+        painting = false;
+    });
+
+    canvas.addEventListener('mousemove', draw);
+
+    function draw(event) {
+        if (!painting) return;
+        ctx.lineWidth = 5;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = 'black';
+
+        ctx.lineTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+    }
 }
 
-function openWeatherApp() {
-    createWindow('天気アプリ', '天気情報を表示します...');
+function clearCanvas() {
+    const canvas = document.getElementById('paint-canvas');
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-function openNotepad() {
-    createWindow('ノートパッド', '<textarea style="width: 100%; height: 90%;"></textarea>');
+function weatherContent() {
+    return `
+        <div id="weather-info">
+            <p>天気情報を取得しています...</p>
+        </div>
+    `;
 }
 
-function openPaintApp() {
-    createWindow('ペイント', 'ペイントアプリ...');
+function openWeather() {
+    createWindow('天気', weatherContent());
+    fetchWeather();
 }
 
-function openClockApp() {
-    createWindow('時計アプリ', '時計を表示します...');
+function fetchWeather() {
+    // ダミーデータを使用
+    setTimeout(() => {
+        const weatherInfo = document.getElementById('weather-info');
+        weatherInfo.innerHTML = `
+            <p>現在の天気: 晴れ</p>
+            <p>気温: 25°C</p>
+        `;
+    }, 1000);
 }
 
-function openTaskManager() {
-    createWindow('タスクマネージャー', 'タスク情報を表示します...');
-}
-
-function openSettings() {
-    createWindow('設定', '設定オプションを表示します...');
+function cameraContent() {
+    return `
+        <video id="camera-stream" width="500" height="500" autoplay></video>
+        <br>
+        <button onclick="stopCamera()">カメラ停止</button>
+    `;
 }
 
 function openCamera() {
-    createWindow('カメラ', '<video autoplay></video>');
+    createWindow('カメラ', cameraContent());
+    const video = document.getElementById('camera-stream');
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+            video.srcObject = stream;
+            video.play();
+        });
+    }
 }
 
-function openFileExplorer() {
-    createWindow('ファイルエクスプローラー', 'ファイルを表示します...');
+function stopCamera() {
+    const video = document.getElementById('camera-stream');
+    const stream = video.srcObject;
+    const tracks = stream.getTracks();
+
+    tracks.forEach(track => {
+        track.stop();
+    });
+
+    video.srcObject = null;
 }
 
-function openChat() {
-    createWindow('チャット', `
-        <div id="chat-messages"></div>
-        <input type="text" id="chat-input" placeholder="メッセージを入力">
-        <button onclick="sendMessage()">送信</button>
-    `);
+function timerContent() {
+    return `
+        <input type="number" id="timer-input" placeholder="秒数を入力">
+        <button onclick="startTimer()">開始</button>
+        <div id="timer-display"></div>
+    `;
+}
+
+function openTimer() {
+    createWindow('タイマー', timerContent());
+}
+
+function startTimer() {
+    const timerInput = document.getElementById('timer-input').value;
+    const timerDisplay = document.getElementById('timer-display');
+    let timeLeft = parseInt(timerInput);
+
+    const interval = setInterval(() => {
+        timerDisplay.textContent = `残り時間: ${timeLeft}秒`;
+        timeLeft -= 1;
+        if (timeLeft < 0) {
+            clearInterval(interval);
+            alert('タイマーが終了しました！');
+        }
+    }, 1000);
+}
+
+function clockContent() {
+    return `
+        <div id="clock-display"></div>
+    `;
+}
+
+function openClock() {
+    createWindow('時計', clockContent());
+    const clockDisplay = document.getElementById('clock-display');
+    setInterval(() => {
+        const now = new Date();
+        clockDisplay.textContent = now.toLocaleTimeString();
+    }, 1000);
 }
