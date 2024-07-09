@@ -15,140 +15,22 @@ function toggleStartMenu() {
 }
 
 function openBrowser() {
-    openApp('ブラウザ');
+    createWindow('ブラウザ', browserContent());
 }
 
-function openCalculator() {
-    openApp('電卓');
-}
-
-function openWeatherApp() {
-    openApp('天気アプリ');
-}
-
-function openNotepad() {
-    openApp('Notepadアプリ');
-}
-
-function openPaintApp() {
-    openApp('ペイントアプリ');
-}
-
-function openClockApp() {
-    openApp('時計アプリ');
-}
-
-function openTaskManager() {
-    openApp('タスクマネージャー');
-}
-
-function openSettings() {
-    openApp('設定');
-}
-
-function openCamera() {
-    openApp('カメラ');
-}
-
-function openFileExplorer() {
-    openApp('ファイルエクスプローラー');
-}
-
-function openChat() {
-    document.getElementById('chat-window').style.display = 'block';
-}
-
-function closeChat() {
-    document.getElementById('chat-window').style.display = 'none';
-}
-
-function sendMessage() {
-    const input = document.getElementById('chat-input');
-    const message = input.value;
-    const username = localStorage.getItem('username');
-
-    if (message && !blackList.includes(username)) {
-        const chatMessages = document.getElementById('chat-messages');
-        const newMessage = document.createElement('div');
-        newMessage.innerHTML = `${username}: ${message} <button onclick="banUser('${username}')">Ban</button>`;
-        chatMessages.appendChild(newMessage);
-        input.value = '';
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    } else if (blackList.includes(username)) {
-        alert('あなたはブラックリストに追加されています。');
-    }
-}
-
-function openApp(appName) {
-    const appContainer = document.getElementById('app-container');
-    const appWindow = document.createElement('div');
-    appWindow.className = 'app-window';
-    appWindow.innerHTML = `
-        <div class="app-title-bar">
-            <span>${appName}</span>
-            <span>
-                <button onclick="minimizeApp(this)">_</button>
-                <button onclick="maximizeApp(this)">□</button>
-                <button onclick="closeApp(this)">×</button>
-            </span>
-        </div>
-        <div class="app-content">${appName}が開かれました</div>
+function browserContent() {
+    return `
+        <input type="text" id="browser-url" placeholder="URLを入力">
+        <button onclick="loadUrl()">移動</button>
+        <iframe id="browser-frame" style="width: 100%; height: calc(100% - 30px);"></iframe>
     `;
-    appContainer.appendChild(appWindow);
 }
 
-// ロック画面でEnterキーを押してログインする機能
-document.getElementById('user-input').addEventListener('keypress', function(event) {
-    if (event.key === 'Enter') {
-        saveName();
-    }
-});
-
-// 初回訪問時の名前入力
-window.onload = function() {
-    const username = localStorage.getItem('username');
-    if (username) {
-        document.getElementById('lock-screen').style.display = 'none';
-    } else {
-        document.getElementById('lock-screen').style.display = 'flex';
-    }
-};
-
-// ブラックリストにユーザーを追加する関数
-function banUser(username) {
-    if (!blackList.includes(username)) {
-        blackList.push(username);
-        alert(`${username}がブラックリストに追加されました。`);
-    }
+function loadUrl() {
+    const url = document.getElementById('browser-url').value;
+    document.getElementById('browser-frame').src = url;
 }
 
-// ブラックリストからユーザーを削除する関数
-function removeFromBlackList(username) {
-    const index = blackList.indexOf(username);
-    if (index > -1) {
-        blackList.splice(index, 1);
-        alert(`${username}がブラックリストから削除されました。`);
-    }
-}
-
-function minimizeApp(button) {
-    const appWindow = button.closest('.app-window');
-    appWindow.style.display = 'none';
-}
-
-function maximizeApp(button) {
-    const appWindow = button.closest('.app-window');
-    appWindow.style.width = '100%';
-    appWindow.style.height = '100%';
-    appWindow.style.top = '0';
-    appWindow.style.left = '0';
-}
-
-function closeApp(button) {
-    const appWindow = button.closest('.app-window');
-    appWindow.remove();
-}
-// 電卓アプリを開く関数
 function openCalculator() {
     createWindow('電卓', calculatorContent());
 }
@@ -190,50 +72,56 @@ function inputCalc(value) {
     }
 }
 
-// タスクマネージャーアプリを開く関数
-function openTaskManager() {
-    createWindow('タスクマネージャー', taskManagerContent());
+function openWeatherApp() {
+    createWindow('天気', weatherAppContent());
+    getWeatherData();
 }
 
-function taskManagerContent() {
-    return '<div id="task-list">タスク一覧をここに表示</div>';
-}
-
-// ブラウザアプリを開く関数
-function openBrowser() {
-    createWindow('ブラウザ', browserContent());
-}
-
-function browserContent() {
+function weatherAppContent() {
     return `
-        <input type="text" id="browser-url" placeholder="URLを入力">
-        <button onclick="loadUrl()">移動</button>
-        <iframe id="browser-frame" style="width: 100%; height: calc(100% - 30px);"></iframe>
+        <div id="weather-info">
+            <h2 id="weather-city"></h2>
+            <p id="weather-description"></p>
+            <p id="weather-temperature"></p>
+            <p id="weather-humidity"></p>
+        </div>
     `;
 }
 
-function loadUrl() {
-    const url = document.getElementById('browser-url').value;
-    document.getElementById('browser-frame').src = url;
+const apiKey = 'YOUR_API_KEY'; // ここにあなたのAPIキーを入力してください
+
+function getWeatherData() {
+    const city = 'Tokyo'; // 取得したい都市の名前を設定
+    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`;
+
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            const cityElement = document.getElementById('weather-city');
+            const descElement = document.getElementById('weather-description');
+            const tempElement = document.getElementById('weather-temperature');
+            const humidityElement = document.getElementById('weather-humidity');
+
+            cityElement.textContent = data.name;
+            descElement.textContent = `天気: ${data.weather[0].description}`;
+            tempElement.textContent = `気温: ${data.main.temp} °C`;
+            humidityElement.textContent = `湿度: ${data.main.humidity} %`;
+        })
+        .catch(error => {
+            console.error('天気情報の取得に失敗しました。', error);
+        });
 }
 
-// 設定アプリを開く関数
-function openSettings() {
-    createWindow('設定', settingsContent());
+function openNotepad() {
+    createWindow('ノートパッド', notepadContent());
 }
 
-function settingsContent() {
+function notepadContent() {
     return `
-        <h2>設定</h2>
-        <p>ここに設定内容を記述</p>
+        <textarea id="notepad-text" style="width: 100%; height: calc(100% - 40px);"></textarea>
     `;
 }
 
-// スタートメニューの表示切替関数
-function toggleStartMenu() {
-    const menu = document.getElementById('start-menu-items');
-    menu.classList.toggle('hidden');
-}
 function openPaintApp() {
     createWindow('ペイント', paintAppContent());
 }
@@ -278,6 +166,7 @@ function clearCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     isPainting = false;
 }
+
 function openCamera() {
     createWindow('カメラ', cameraAppContent());
 }
@@ -312,6 +201,7 @@ navigator.mediaDevices.getUserMedia({ video: true })
     .catch(function (error) {
         console.error('カメラの使用が許可されていません。', error);
     });
+
 function openFileExplorer() {
     createWindow('ファイルエクスプローラー', fileExplorerContent());
 }
@@ -332,104 +222,95 @@ function fileExplorerContent() {
         </div>
     `;
 }
-function openNotepad() {
-    createWindow('ノートパッド', notepadContent());
+
+function openTaskManager() {
+    createWindow('タスクマネージャー', taskManagerContent());
 }
 
-function notepadContent() {
+function taskManagerContent() {
+    return '<div id="task-list">タスク一覧をここに表示</div>';
+}
+
+function openSettings() {
+    createWindow('設定', settingsContent());
+}
+
+function settingsContent() {
     return `
-        <textarea id="notepad-text" style="width: 100%; height: calc(100% - 40px);"></textarea>
+        <h2>設定</h2>
+        <p>ここに設定内容を記述</p>
     `;
 }
-const apiKey = 'YOUR_API_KEY'; // ここにあなたのAPIキーを入力してください
 
-function openWeatherApp() {
-    createWindow('天気', weatherAppContent());
-    getWeatherData();
+function openChat() {
+    const username = localStorage.getItem('username');
+    if (!username) {
+        alert('ログインしてください。');
+        return;
+    }
+    document.getElementById('chat-window').style.display = 'block';
 }
 
-function weatherAppContent() {
-    return `
-        <div id="weather-info">
-            <h2 id="weather-city"></h2>
-            <p id="weather-description"></p>
-            <p id="weather-temperature"></p>
-            <p id="weather-humidity"></p>
+function sendMessage() {
+    const message = document.getElementById('chat-input').value;
+    const username = localStorage.getItem('username');
+    if (!message) return;
+    if (blackList.includes(username)) {
+        alert('あなたはブラックリストに入っています。');
+        return;
+    }
+    const messageElement = document.createElement('div');
+    messageElement.textContent = `${username}: ${message}`;
+    document.getElementById('chat-messages').appendChild(messageElement);
+    document.getElementById('chat-input').value = '';
+}
+
+function closeChat() {
+    document.getElementById('chat-window').style.display = 'none';
+}
+
+function createWindow(title, content) {
+    const appContainer = document.getElementById('app-container');
+    const appWindow = document.createElement('div');
+    appWindow.className = 'app-window';
+    appWindow.innerHTML = `
+        <div class="app-title-bar">
+            <span>${title}</span>
+            <button onclick="closeApp(this)">×</button>
+        </div>
+        <div class="app-content">
+            ${content}
         </div>
     `;
+    appContainer.appendChild(appWindow);
 }
 
-function getWeatherData() {
-    const city = 'Tokyo'; // 取得したい都市の名前を設定
-    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`;
-
-    fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-            const cityElement = document.getElementById('weather-city');
-            const descElement = document.getElementById('weather-description');
-            const tempElement = document.getElementById('weather-temperature');
-            const humidityElement = document.getElementById('weather-humidity');
-
-            cityElement.textContent = data.name;
-            descElement.textContent = `天気: ${data.weather[0].description}`;
-            tempElement.textContent = `気温: ${data.main.temp} °C`;
-            humidityElement.textContent = `湿度: ${data.main.humidity} %`;
-        })
-        .catch(error => {
-            console.error('天気情報の取得に失敗しました。', error);
-        });
+function closeApp(button) {
+    const appWindow = button.closest('.app-window');
+    appWindow.style.display = 'none';
 }
-function startMenu() {
-    const startMenuElement = document.getElementById('start-menu');
-    if (startMenuElement.style.display === 'block') {
-        startMenuElement.style.display = 'none';
-    } else {
-        startMenuElement.style.display = 'block';
+
+function maximizeApp(button) {
+    const appWindow = button.closest('.app-window');
+    appWindow.style.width = '100%';
+    appWindow.style.height = '100%';
+    appWindow.style.top = '0';
+    appWindow.style.left = '0';
+}
+
+function minimizeApp(button) {
+    const appWindow = button.closest('.app-window');
+    appWindow.style.bottom = '0';
+}
+
+function restoreApp(button) {
+    const appWindow = button.closest('.app-window');
+    appWindow.style.bottom = '10%';
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const savedUsername = localStorage.getItem('username');
+    if (savedUsername) {
+        document.getElementById('lock-screen').style.display = 'none';
     }
-}
-// app.js
-function startMenu() {
-    var startMenu = document.getElementById("start-menu");
-    if (startMenu.style.display === "none") {
-        startMenu.style.display = "block";
-    } else {
-        startMenu.style.display = "none";
-    }
-}
-
-function openClockApp() {
-    // Hide all other apps
-    hideAllApps();
-
-    // Display clock app
-    var clockApp = document.getElementById("clockApp");
-    clockApp.style.display = "block";
-
-    // Start the clock
-    updateClock();
-}
-
-function updateClock() {
-    var now = new Date();
-    var hours = formatTime(now.getHours());
-    var minutes = formatTime(now.getMinutes());
-    var seconds = formatTime(now.getSeconds());
-
-    document.getElementById("hours").textContent = hours;
-    document.getElementById("minutes").textContent = minutes;
-    document.getElementById("seconds").textContent = seconds;
-
-    setTimeout(updateClock, 1000); // Update every second
-}
-
-function formatTime(time) {
-    return (time < 10 ? "0" : "") + time;
-}
-
-function hideAllApps() {
-    var apps = document.querySelectorAll(".app-container");
-    apps.forEach(function(app) {
-        app.style.display = "none";
-    });
-}
+});
