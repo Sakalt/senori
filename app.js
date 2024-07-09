@@ -317,3 +317,57 @@ function openChat() {
     const chatWindow = document.getElementById('chat-window');
     chatWindow.classList.toggle('hidden');
 }
+// ウィンドウを作成する関数
+function createWindow(title) {
+    const appContainer = document.getElementById('app-container');
+
+    // 既存のウィンドウを非表示にする
+    const currentWindows = appContainer.querySelectorAll('.app-window');
+    currentWindows.forEach(window => {
+        window.style.display = 'none';
+    });
+
+    // 新しいウィンドウを作成して追加する
+    const newWindow = document.createElement('div');
+    newWindow.classList.add('app-window');
+    newWindow.innerHTML = `
+        <div class="app-title-bar" onmousedown="startDrag(event, this.parentElement)">
+            <span>${title}</span>
+            <button onclick="closeWindow(this)">✕</button>
+        </div>
+        <div class="app-content">
+            <p>ここにウィンドウの内容を追加します。</p>
+        </div>
+    `;
+
+    appContainer.appendChild(newWindow);
+}
+
+// ウィンドウを閉じる関数
+function closeWindow(button) {
+    const window = button.parentElement.parentElement;
+    window.style.display = 'none';
+}
+
+// ウィンドウのドラッグ可能な実装
+function startDrag(event, element) {
+    event.preventDefault();
+    const offsetX = event.clientX - element.getBoundingClientRect().left;
+    const offsetY = event.clientY - element.getBoundingClientRect().top;
+
+    function moveAt(e) {
+        element.style.left = e.pageX - offsetX + 'px';
+        element.style.top = e.pageY - offsetY + 'px';
+    }
+
+    function stopDrag() {
+        document.removeEventListener('mousemove', moveAt);
+        document.removeEventListener('mouseup', stopDrag);
+    }
+
+    document.addEventListener('mousemove', moveAt);
+    document.addEventListener('mouseup', stopDrag);
+}
+
+// 初期のウィンドウを作成する例
+createWindow('サンプルウィンドウ');
