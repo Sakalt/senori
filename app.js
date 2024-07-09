@@ -96,7 +96,61 @@ function createWindow(title, content) {
     makeDraggable(newWindow);
     return newWindow; // ウィンドウ要素を返す
 }
+function sendMessage() {
+    const input = document.getElementById('chat-input');
+    const message = input.value;
+    const username = localStorage.getItem('username');
 
+    if (message && !blackList.includes(username)) {
+        const chatMessages = document.getElementById('chat-messages');
+        const newMessage = document.createElement('div');
+        newMessage.innerHTML = `${username}: ${message} <button onclick="banUser('${username}')">Ban</button>`;
+        chatMessages.appendChild(newMessage);
+        input.value = '';
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    } else if (blackList.includes(username)) {
+        alert('あなたはブラックリストに追加されています。');
+    }
+}
+
+function openApp(appName) {
+    const appContainer = document.getElementById('app-container');
+    appContainer.innerHTML = `<div class="app-window">${appName}が開かれました</div>`;
+}
+
+// ロック画面でEnterキーを押してログインする機能
+document.getElementById('user-input').addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+        saveName();
+    }
+});
+
+// 初回訪問時の名前入力
+window.onload = function() {
+    const username = localStorage.getItem('username');
+    if (username) {
+        document.getElementById('lock-screen').style.display = 'none';
+    } else {
+        document.getElementById('lock-screen').style.display = 'flex';
+    }
+};
+
+// ブラックリストにユーザーを追加する関数
+function banUser(username) {
+    if (!blackList.includes(username)) {
+        blackList.push(username);
+        alert(`${username}がブラックリストに追加されました。`);
+    }
+}
+
+// ブラックリストからユーザーを削除する関数
+function removeFromBlackList(username) {
+    const index = blackList.indexOf(username);
+    if (index > -1) {
+        blackList.splice(index, 1);
+        alert(`${username}がブラックリストから削除されました。`);
+    }
+}
 // ウィンドウをドラッグ可能にする関数
 function makeDraggable(element) {
     let isMouseDown = false;
