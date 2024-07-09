@@ -1,7 +1,4 @@
-function toggleStartMenu() {
-    const startMenu = document.getElementById('start-menu');
-    startMenu.style.display = startMenu.style.display === 'none' ? 'block' : 'none';
-}
+let blackList = [];
 
 function saveName() {
     const userInput = document.getElementById('user-input').value;
@@ -10,6 +7,11 @@ function saveName() {
         alert(`ようこそ、${userInput}さん！`);
         document.getElementById('lock-screen').style.display = 'none';
     }
+}
+
+function toggleStartMenu() {
+    const startMenu = document.getElementById('start-menu');
+    startMenu.style.display = startMenu.style.display === 'none' ? 'block' : 'none';
 }
 
 function openBrowser() {
@@ -53,55 +55,6 @@ function openFileExplorer() {
 }
 
 function openChat() {
-    openApp('チャット');
-}
-
-function openApp(appName) {
-    const appContainer = document.getElementById('app-container');
-    appContainer.innerHTML = `<div class="app-window">${appName}が開かれました</div>`;
-}
-
-// ロック画面でEnterキーを押してログインする機能
-document.getElementById('user-input').addEventListener('keypress', function(event) {
-    if (event.key === 'Enter') {
-        saveName();
-    }
-});
-
-// 初回訪問時の名前入力
-window.onload = function() {
-    const username = localStorage.getItem('username');
-    if (username) {
-        document.getElementById('lock-screen').style.display = 'none';
-    } else {
-        document.getElementById('lock-screen').style.display = 'flex';
-    }
-};
-// ウィンドウを作成する関数
-function createWindow(title, content) {
-    const newWindow = document.createElement('div');
-    newWindow.className = 'window';
-    newWindow.innerHTML = `
-        <div class="title-bar">
-            ${title}
-            <div>
-                <button onclick="minimizeWindow(this)">−</button>
-                <button onclick="maximizeWindow(this)">□</button>
-                <button onclick="closeWindow(this)">×</button>
-            </div>
-        </div>
-        <div class="content">${content}</div>
-    `;
-    document.body.appendChild(newWindow);
-    makeDraggable(newWindow);
-    return newWindow; // ウィンドウ要素を返す
-}
-function sendMessage() {
-    const input = document.getElementById('chat-input');
-    const message = input.value;
-    const username = localStorage.getItem('username');
-
-    function openChat() {
     document.getElementById('chat-window').style.display = 'block';
 }
 
@@ -195,77 +148,6 @@ function closeApp(button) {
     const appWindow = button.closest('.app-window');
     appWindow.remove();
 }
-function openApp(appName) {
-    const appContainer = document.getElementById('app-container');
-    appContainer.innerHTML = `<div class="app-window">${appName}が開かれました</div>`;
-}
-
-// ロック画面でEnterキーを押してログインする機能
-document.getElementById('user-input').addEventListener('keypress', function(event) {
-    if (event.key === 'Enter') {
-        saveName();
-    }
-});
-
-// 初回訪問時の名前入力
-window.onload = function() {
-    const username = localStorage.getItem('username');
-    if (username) {
-        document.getElementById('lock-screen').style.display = 'none';
-    } else {
-        document.getElementById('lock-screen').style.display = 'flex';
-    }
-};
-
-
-// ウィンドウをドラッグ可能にする関数
-function makeDraggable(element) {
-    let isMouseDown = false;
-    let offsetX, offsetY;
-
-    element.querySelector('.title-bar').addEventListener('mousedown', function (e) {
-        isMouseDown = true;
-        offsetX = e.clientX - element.offsetLeft;
-        offsetY = e.clientY - element.offsetTop;
-        e.stopPropagation();
-        e.preventDefault();
-    });
-
-    document.addEventListener('mousemove', function (e) {
-        if (isMouseDown) {
-            element.style.left = `${e.clientX - offsetX}px`;
-            element.style.top = `${e.clientY - offsetY}px`;
-        }
-    });
-
-    document.addEventListener('mouseup', function () {
-        isMouseDown = false;
-    });
-}
-
-// ウィンドウを閉じる関数
-function closeWindow(button) {
-    button.closest('.window').remove();
-}
-
-// ウィンドウを最小化する関数
-function minimizeWindow(button) {
-    const window = button.closest('.window');
-    window.style.display = 'none';
-}
-
-// ウィンドウを最大化する関数
-function maximizeWindow(button) {
-    const window = button.closest('.window');
-    window.style.width = '100%';
-    window.style.height = '100%';
-}
-
-// 電卓アプリを開く関数
-function openCalculator() {
-    createWindow('電卓', calculatorContent());
-}
-
 function calculatorContent() {
     return `
         <input type="text" id="calc-display" disabled>
