@@ -1,8 +1,11 @@
+/* スタイルの設定 */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
-    padding: 0;
-    background: #f0f0f0;
+    overflow: hidden;
+    background-image: url('壁紙.png');
+    background-size: cover;
+    background-position: center;
 }
 
 #lock-screen {
