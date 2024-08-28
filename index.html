@@ -3,36 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Windows風アプリケーション</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>未知言語解読ゲーム</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+        }
+
+        #game-container {
+            text-align: center;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        #room img {
+            width: 100%;
+            max-width: 600px;
+            border-radius: 8px;
+        }
+
+        input[type="text"] {
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .moji {
+            width: 50px;
+            height: 50px;
+            margin: 10px;
+            display: inline-block;
+        }
+
+        .meaning {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-    <div id="lock-screen">
-        <h2>ようこそ！ログインしてください。</h2>
-        <input type="text" id="user-input" placeholder="ユーザー名を入力してください">
-        <button onclick="saveName()">ログイン</button>
+    <div id="game-container">
+        <div id="room">
+            <img id="room-image" src="room1.png" alt="部屋の画像">
+        </div>
+        <div id="question">質問がここに表示されます</div>
+        <input type="text" id="answer" placeholder="回答を入力">
+        <button id="submit-btn">送信</button>
+        <div id="feedback"></div>
+        <div id="moji1" class="moji"></div>
+        <div id="meaning" class="meaning"></div>
     </div>
 
-    <div id="app-container">
-        <div id="start-menu" class="hidden">
-            <button onclick="toggleStartMenu()">スタート</button>
-            <div id="start-menu-content">
-                <button onclick="openWindBrowser()">ブラウザ</button>
-                <button onclick="openCalculator()">電卓</button>
-                <button onclick="openClockApp()">時計</button>
-                <button onclick="openTimerApp()">タイマー</button>
-                <button onclick="openNotepad()">メモ帳</button>
-                <button onclick="openPaintApp()">ペイント</button>
-                <button onclick="openChat()">チャット</button>
-            </div>
-        </div>
-        <div id="chat-window" class="hidden">
-            <div id="chat-messages"></div>
-            <input type="text" id="chat-input" placeholder="メッセージを入力してください">
-            <button onclick="sendMessage()">送信</button>
-        </div>
-    </div>
+    <script>
+        const rooms = [
+            {
+                image: 'room1.png',
+                questions: [
+                    { prompt: "翻訳: 四角形、丸形、星形", answers: ["SQUARE", "CIRCLE", "STAR"] },
+                    { prompt: "翻訳: 三角形、十字形", answers: ["TRIANGLE", "CROSS"] }
+                ]
+            }
+            // 他の部屋の定義も追加できます
+        ];
 
-    <script src="app.js" defer></script>
+        const mojiPaths = {
+            'SQUARE': 'M 10 10 H 90 V 90 H 10 Z', // 四角形
+            'CIRCLE': 'M 50 10 A 40 40 0 1 0 50 90 A 40 40 0 1 0 50 10', // 丸形
+            'TRIANGLE': 'M 50 10 L 90 90 H 10 Z', // 三角形
+            'STAR': 'M 50 10 L 61 35 H 90 35 L 66 57 L 76 90 L 50 70 L 24 90 L 34 57 L 10 35 L 39 35 Z', // 星形
+            'MOJI1': 'A 50 10 A 40 40 0 1 0 50 90 A 40 40 0 1 0 50 10', // 丸形
+            'CROSS': 'M 40 10 H 60 V 30 H 90 V 50 H 60 V 70 H 40 V 50 H 10 V 30 H 40 Z' // 十字形
+        };
+
+        const meanings = {
+            'SQUARE': '食べる',
+            'CIRCLE': '穴',
+            'TRIANGLE': '〜で',
+            'STAR': '島',
+            'MOJI1': '命令',
+            'CROSS': '行く'
+        };
+
+        let currentRoomIndex = 0;
+        let currentQuestionIndex = 0;
+
+        function loadRoom() {
+            const roomImage = document.getElementById('room-image');
+            const questionElement = document.getElementById('question');
+            const mojiElement = document.getElementById('moji1');
+            const meaningElement = document.getElementById('meaning');
+            const currentRoom = rooms[currentRoomIndex];
+            const currentQuestion = currentRoom.questions[currentQuestionIndex];
+            
+            roomImage.src = currentRoom.image;
+            questionElement.textContent = currentQuestion.prompt;
+
+            const answers = currentQuestion.answers;
+            mojiElement.innerHTML = answers.map(answer => 
+                `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <path d="${mojiPaths[answer]}" fill="black"/>
+                </svg>`).join('');
+
+            meaningElement.innerHTML = answers.map(answer => 
+                `<div>${answer}: ${meanings[answer]}</div>`).join('<br>');
+        }
+
+        function checkAnswer() {
+            const answerInput = document.getElementById('answer');
+            const feedbackElement = document.getElementById('feedback');
+            const userAnswer = answerInput.value.trim();
+            const currentRoom = rooms[currentRoomIndex];
+            const currentQuestion = currentRoom.questions[currentQuestionIndex];
+            const correctAnswers = currentQuestion.answers;
+            const correctMeanings = correctAnswers.map(answer => meanings[answer]);
+
+            if (correctMeanings.includes(userAnswer)) {
+                feedbackElement.textContent = "正解！";
+                currentQuestionIndex++;
+                
+                if (currentQuestionIndex >= currentRoom.questions.length) {
+                    currentRoomIndex = (currentRoomIndex + 1) % rooms.length;
+                    currentQuestionIndex = 0;
+                }
+
+                loadRoom();
+                answerInput.value = '';
+            } else {
+                feedbackElement.textContent = "不正解、もう一度試してください！";
+            }
+        }
+
+        document.getElementById('submit-btn').addEventListener('click', checkAnswer);
+
+        loadRoom();
+    </script>
 </body>
 </html>
